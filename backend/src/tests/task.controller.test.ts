@@ -2,24 +2,22 @@ import request from 'supertest';
 import mongoose from 'mongoose';
 import app from '../app';
 import Task from '../models/task.model';
+import { setupTestDatabase, teardownTestDatabase, clearDatabase } from './setup';
 
 describe('Task Controller Tests', () => {
-  // Use a test database - either environment variable or default
-  const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/taskdb_test';
-
   beforeAll(async () => {
-    // Connect to test database
-    await mongoose.connect(MONGO_URI);
+    // Setup in-memory MongoDB
+    await setupTestDatabase();
   });
 
   beforeEach(async () => {
     // Clear the Task collection before each test
-    await Task.deleteMany({});
+    await clearDatabase();
   });
 
   afterAll(async () => {
-    // Cleanup: close connection
-    await mongoose.connection.close();
+    // Cleanup: close connection and stop in-memory MongoDB
+    await teardownTestDatabase();
   });
 
   describe('POST /api/tasks - Create Task', () => {
