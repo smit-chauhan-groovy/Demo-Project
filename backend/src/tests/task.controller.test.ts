@@ -264,6 +264,35 @@ describe('Task Controller Tests', () => {
       expect(response.body.completed).toBe(true);
     });
 
+    it('BUG-10: should allow marking completed task as incomplete', async () => {
+      // Create a task that is already completed
+      const task = await Task.create({
+        title: 'Completed task to mark incomplete',
+        completed: true,
+      });
+
+      // Mark it as incomplete
+      const updateData = {
+        completed: false,
+      };
+
+      const response = await request(app)
+        .put(`/api/tasks/${task._id}`)
+        .send(updateData)
+        .expect(200);
+
+      // Verify the task is now incomplete
+      expect(response.body.completed).toBe(false);
+
+      // Verify we can toggle it back to completed
+      const toggleBack = await request(app)
+        .put(`/api/tasks/${task._id}`)
+        .send({ completed: true })
+        .expect(200);
+
+      expect(toggleBack.body.completed).toBe(true);
+    });
+
     it('should update multiple fields at once', async () => {
       const task = await Task.create({
         title: 'Original Title',
