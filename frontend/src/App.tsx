@@ -28,7 +28,7 @@ function App() {
   const handleTaskCreated = async (title: string, description: string) => {
     try {
       const newTask = await taskApi.createTask({ title, description });
-      setTasks([newTask, ...tasks]);
+      setTasks([...tasks, newTask]);
     } catch (error) {
       console.error("Failed to create task:", error);
     }
