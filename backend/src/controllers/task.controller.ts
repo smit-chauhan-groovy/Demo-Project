@@ -3,7 +3,7 @@ import Task from "../models/task.model";
 
 // @desc    Create a task
 // @route   POST /api/tasks
-export const createTasks = async (req: Request, res: Response) => {
+export const createTask = async (req: Request, res: Response) => {
   try {
     const { title, description, completed } = req.body;
     if (!title) {
