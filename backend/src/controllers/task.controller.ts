@@ -7,7 +7,7 @@ export const createTask = async (req: Request, res: Response) => {
   try {
     const { title, description, completed } = req.body;
     if (!title) {
-      return res.status(400).json({ message: "Title is required" });
+      return res.status(400)({ message: "Title is required" });
     }
 
     const task = new Task({ title, description, completed });
