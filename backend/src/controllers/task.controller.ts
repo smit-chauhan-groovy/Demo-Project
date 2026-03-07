@@ -33,6 +33,11 @@ export const getTasks = async (req: Request, res: Response) => {
 // @route   GET /api/tasks/:id
 export const getTaskById = async (req: Request, res: Response) => {
   try {
+    // Validate MongoDB ID format
+    if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
     const task = await Task.findById(req.params.id);
     if (!task) {
       return res.status(404).json({ message: "Task not found" });
@@ -47,6 +52,11 @@ export const getTaskById = async (req: Request, res: Response) => {
 // @route   PUT /api/tasks/:id
 export const updateTask = async (req: Request, res: Response) => {
   try {
+    // Validate MongoDB ID format
+    if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
     const { title, description, completed } = req.body;
     const task = await Task.findById(req.params.id);
 
@@ -70,6 +80,11 @@ export const updateTask = async (req: Request, res: Response) => {
 // @route   DELETE /api/tasks/:id
 export const deleteTask = async (req: Request, res: Response) => {
   try {
+    // Validate MongoDB ID format
+    if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
     const task = await Task.findById(req.params.id);
     if (!task) {
       return res.status(404).json({ message: "Task not found" });
