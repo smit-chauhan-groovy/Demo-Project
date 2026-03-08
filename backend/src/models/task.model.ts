@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import { ITask } from '../types/task.types';
 
-export interface ITaskDocument extends ITask, Document {}
+export interface ITaskDocument extends ITask, Document { }
 
 const TaskSchema: Schema = new Schema(
   {
@@ -14,4 +14,3 @@ const TaskSchema: Schema = new Schema(
   }
 );
 
-export default mongoose.model<ITaskDocument>('Task', TaskSchema);
