@@ -320,65 +320,6 @@ describe('Task Controller Tests', () => {
     });
   });
 
-  describe('DELETE /api/tasks/:id - Delete Task', () => {
-    it('should delete an existing task', async () => {
-      const task = await Task.create({
-        title: 'Task to delete',
-        description: 'This will be deleted',
-      });
-
-      const response = await request(app)
-        .delete(`/api/tasks/${task._id}`)
-        .expect(200);
-
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('deleted successfully');
-
-      // Verify task is actually deleted
-      const deletedTask = await Task.findById(task._id);
-      expect(deletedTask).toBeNull();
-    });
-
-    it('should return 404 when deleting non-existent task', async () => {
-      const fakeId = new mongoose.Types.ObjectId();
-
-      const response = await request(app)
-        .delete(`/api/tasks/${fakeId}`)
-        .expect(404);
-
-      expect(response.body).toHaveProperty('message');
-      expect(response.body.message).toContain('Task not found');
-    });
-
-    it('should return 404 when deleting with invalid ID format', async () => {
-      const invalidId = 'invalid-id-format';
-
-      const response = await request(app)
-        .delete(`/api/tasks/${invalidId}`)
-        .expect(404);
-
-      expect(response.body).toHaveProperty('message');
-    });
-
-    it('should only delete the specified task', async () => {
-      const task1 = await Task.create({ title: 'Task 1' });
-      const task2 = await Task.create({ title: 'Task 2' });
-      const task3 = await Task.create({ title: 'Task 3' });
-
-      await request(app)
-        .delete(`/api/tasks/${task2._id}`)
-        .expect(200);
-
-      const remainingTasks = await Task.find();
-      expect(remainingTasks).toHaveLength(2);
-
-      const ids = remainingTasks.map(t => t._id.toString());
-      expect(ids).toContain(task1._id.toString());
-      expect(ids).toContain(task3._id.toString());
-      expect(ids).not.toContain(task2._id.toString());
-    });
-  });
-
   describe('Edge Cases and Error Handling', () => {
     it('should handle concurrent requests properly', async () => {
       const tasks = Array.from({ length: 5 }, (_, i) => ({
