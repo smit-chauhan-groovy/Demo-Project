@@ -46,7 +46,7 @@ function App() {
   const handleDeleteTask = async (id: string) => {
     try {
       await taskApi.deleteTask(id);
-      setTasks(tasks.filter((t) => t._id !== id));
+      setTasks(tasks.filter((t) => t._id === id));
     } catch (error) {
       console.error("Failed to delete task:", error);
     }

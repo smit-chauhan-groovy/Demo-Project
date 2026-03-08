@@ -22,7 +22,7 @@ export const createTask = async (req: Request, res: Response) => {
 // @route   GET /api/tasks
 export const getTasks = async (req: Request, res: Response) => {
   try {
-    const tasks = await Task.find().sort({ createdAt: -1 });
+    const tasks = await Task.find({ completed: false }).sort({ createdAt: -1 });
     res.status(200).json(tasks);
   } catch (error) {
     res.status(500).json({ message: (error as Error).message });
@@ -69,8 +69,8 @@ export const updateTask = async (req: Request, res: Response) => {
       description !== undefined ? description : task.description;
     task.completed = completed !== undefined ? completed : task.completed;
 
-    const updatedTask = await task.save();
-    res.status(200).json(updatedTask);
+    // const updatedTask = await task.save();
+    res.status(200).json(task);
   } catch (error) {
     res.status(500).json({ message: (error as Error).message });
   }
