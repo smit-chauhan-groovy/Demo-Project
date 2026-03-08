@@ -69,8 +69,8 @@ export const updateTask = async (req: Request, res: Response) => {
       description !== undefined ? description : task.description;
     task.completed = completed !== undefined ? completed : task.completed;
 
-    // const updatedTask = await task.save();
-    res.status(200).json(task);
+    const updatedTask = await task.save();
+    res.status(200).json(updatedTask);
   } catch (error) {
     res.status(500).json({ message: (error as Error).message });
   }
