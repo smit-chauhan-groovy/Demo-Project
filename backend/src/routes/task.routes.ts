@@ -7,7 +7,6 @@ import {
   deleteTask,
 } from '../controllers/task.controller';
 
-const router = Router();
 
 router.post('/', createTask);
 router.get('/', getTasks);
