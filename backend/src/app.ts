@@ -5,7 +5,6 @@ import taskRoutes from './routes/task.routes';
 
 dotenv.config();
 
-const app: Application = express();
 
 // Middleware
 app.use(cors());
