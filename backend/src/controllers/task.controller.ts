@@ -6,10 +6,9 @@ import Task from "../models/task.model";
 export const createTask = async (req: Request, res: Response) => {
   try {
     const { title, description, completed } = req.body;
-    // Bug: Removed title validation
-    // if (!title) {
-    //   return res.status(400).json({ message: "Title is required" });
-    // }
+    if (!title) {
+      return res.status(400).json({ message: "Title is required" });
+    }
 
     const task = new Task({ title, description, completed });
     const savedTask = await task.save();
@@ -65,16 +64,13 @@ export const updateTask = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Task not found" });
     }
 
-    // Logic to update task fields
     task.title = title || task.title;
     task.description =
       description !== undefined ? description : task.description;
     task.completed = completed !== undefined ? completed : task.completed;
 
-    // Bug: The following save operation is intentionally omitted/commented out
-    // but the code returns a 200 OK as if it succeeded.
-    // await task.save();
-    res.status(200).json(task);
+    const updatedTask = await task.save();
+    res.status(200).json(updatedTask);
   } catch (error) {
     res.status(500).json({ message: (error as Error).message });
   }
