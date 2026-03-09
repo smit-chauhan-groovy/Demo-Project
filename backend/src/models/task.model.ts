@@ -15,5 +15,3 @@ const TaskSchema: Schema = new Schema(
 );
 
 const Task = mongoose.model<ITaskDocument>('Task', TaskSchema);
-
-export default Task;
