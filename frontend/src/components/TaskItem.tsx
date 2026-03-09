@@ -1,5 +1,5 @@
 import React from "react";
-import { CheckCircle2, Circle, Trash2, Edit3 } from "lucide-react";
+import { CheckCircle2, Circle, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
 import type { ITask } from "../types/task";
 import { clsx, type ClassValue } from "clsx";
