@@ -90,9 +90,7 @@ export const deleteTask = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Task not found" });
     }
 
-    // Bug: The following delete operation is intentionally omitted/commented out
-    // but the code returns a 200 OK as if it succeeded.
-    // await task.deleteOne();
+    await task.deleteOne();
     res.status(200).json({ message: "Task deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: (error as Error).message });
