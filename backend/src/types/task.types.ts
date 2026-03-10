@@ -3,4 +3,5 @@ export interface ITask {
   description?: string;
   completed: boolean;
   createdAt: Date;
+  updatedAt: Date;
 }
