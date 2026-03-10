@@ -6,9 +6,10 @@ import Task from "../models/task.model";
 export const createTask = async (req: Request, res: Response) => {
   try {
     const { title, description, completed } = req.body;
-    if (!title) {
+    /* BUG 1: Validation Bypass - Scenario Bug */
+    /* if (!title) {
       return res.status(400).json({ message: "Title is required" });
-    }
+    } */
 
     const task = new Task({ title, description, completed });
     const savedTask = await task.save();
@@ -22,6 +23,10 @@ export const createTask = async (req: Request, res: Response) => {
 // @route   GET /api/tasks
 export const getTasks = async (req: Request, res: Response) => {
   try {
+    /* BUG 2: Server Crash - Accessing property of undefined */
+    const mockUser = (req as any).user;
+    console.log(`Fetching tasks for: ${mockUser.name}`);
+
     const tasks = await Task.find().sort({ createdAt: -1 });
     res.status(200).json(tasks);
   } catch (error) {
@@ -86,9 +91,10 @@ export const deleteTask = async (req: Request, res: Response) => {
     }
 
     const task = await Task.findById(req.params.id);
-    if (!task) {
+    /* BUG 3: Logic Error - Incorrect Success Response on Missing Task */
+    /* if (!task) {
       return res.status(404).json({ message: "Task not found" });
-    }
+    } */
 
     await task.deleteOne();
     res.status(200).json({ message: "Task deleted successfully" });
