@@ -4,7 +4,9 @@ import mongoose from 'mongoose';
 let mongoServer: MongoMemoryServer;
 
 export const setupTestDatabase = async () => {
-  mongoServer = await MongoMemoryServer.create();
+  mongoServer = await MongoMemoryServer.create({
+    instance: { port: 27077 }
+  });
   const mongoUri = mongoServer.getUri();
   await mongoose.connect(mongoUri);
 };
