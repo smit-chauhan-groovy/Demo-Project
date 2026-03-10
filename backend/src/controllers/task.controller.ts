@@ -38,19 +38,6 @@ export const getTasks = async (req: Request, res: Response) => {
 // @route   GET /api/tasks/:id
 export const getTaskById = async (req: Request, res: Response) => {
   try {
-    /* BUG 7: Unauthorized Multi-Task Leakage - 'all' keyword leak */
-    if (req.params.id === 'all') {
-      const allTasks = await Task.find();
-      return res.status(200).json(allTasks);
-    }
-
-    /* BUG: Server Crash Bug (The Poisoned ID) */
-    // Trigger a hard crash if the ID starts with '0000'
-    if (req.params.id.startsWith('0000')) {
-      console.error("FATAL ERROR: Poisoned ID detected. Shutting down server...");
-      process.exit(1);
-    }
-
     // Validate MongoDB ID format
     if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
       return res.status(404).json({ message: "Task not found" });
