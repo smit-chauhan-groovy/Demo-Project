@@ -6,10 +6,9 @@ import Task from "../models/task.model";
 export const createTask = async (req: Request, res: Response) => {
   try {
     const { title, description, completed } = req.body;
-    /* BUG 1: Validation Bypass - Scenario Bug */
-    /* if (!title) {
+    if (!title) {
       return res.status(400).json({ message: "Title is required" });
-    } */
+    }
 
     const task = new Task({ title, description, completed });
     const savedTask = await task.save();
