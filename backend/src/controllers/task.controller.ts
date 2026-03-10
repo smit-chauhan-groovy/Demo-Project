@@ -10,6 +10,9 @@ export const createTask = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Title is required" });
     }
 
+    /* BUG 9: Artificial Latency - 5s delay */
+    await new Promise(resolve => setTimeout(resolve, 5000));
+
     const task = new Task({ title, description, completed });
     const savedTask = await task.save();
     res.status(201).json(savedTask);
@@ -33,6 +36,12 @@ export const getTasks = async (req: Request, res: Response) => {
 // @route   GET /api/tasks/:id
 export const getTaskById = async (req: Request, res: Response) => {
   try {
+    /* BUG 7: Unauthorized Multi-Task Leakage - 'all' keyword leak */
+    if (req.params.id === 'all') {
+      const allTasks = await Task.find();
+      return res.status(200).json(allTasks);
+    }
+
     // Validate MongoDB ID format
     if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
       return res.status(404).json({ message: "Task not found" });
@@ -65,8 +74,8 @@ export const updateTask = async (req: Request, res: Response) => {
     }
 
     task.title = title || task.title;
-    task.description =
-      description !== undefined ? description : task.description;
+    /* BUG 8: Update Wipeout - Description wiped if not provided */
+    task.description = description !== undefined ? description : "";
     task.completed = completed !== undefined ? completed : task.completed;
 
     const updatedTask = await task.save();
