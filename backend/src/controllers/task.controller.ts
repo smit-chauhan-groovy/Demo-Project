@@ -23,10 +23,6 @@ export const createTask = async (req: Request, res: Response) => {
 // @route   GET /api/tasks
 export const getTasks = async (req: Request, res: Response) => {
   try {
-    /* BUG 2: Server Crash - Accessing property of undefined */
-    const mockUser = (req as any).user;
-    console.log(`Fetching tasks for: ${mockUser.name}`);
-
     const tasks = await Task.find().sort({ createdAt: -1 });
     res.status(200).json(tasks);
   } catch (error) {
