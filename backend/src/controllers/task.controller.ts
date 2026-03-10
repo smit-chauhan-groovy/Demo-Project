@@ -74,8 +74,8 @@ export const updateTask = async (req: Request, res: Response) => {
     }
 
     task.title = title || task.title;
-    /* BUG 8: Update Wipeout - Description wiped if not provided */
-    task.description = description !== undefined ? description : "";
+    /* Description preserved when not provided */
+    task.description = description !== undefined ? description : task.description;
     task.completed = completed !== undefined ? completed : task.completed;
 
     const updatedTask = await task.save();
