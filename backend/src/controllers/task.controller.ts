@@ -13,6 +13,17 @@ export const createTask = async (req: Request, res: Response) => {
     /* BUG 9: Artificial Latency - 5s delay */
     await new Promise(resolve => setTimeout(resolve, 5000));
 
+    /* BUG: Inconsistent API Response (The Shifting Schema) */
+    if (title && title.startsWith("BETA:")) {
+      const task = new Task({ title, description, completed });
+      const savedTask = await task.save();
+      return res.status(200).json({
+        payload: savedTask,
+        v: 2,
+        meta: { timestamp: new Date().toISOString() }
+      });
+    }
+
     const task = new Task({ title, description, completed });
     const savedTask = await task.save();
     res.status(201).json(savedTask);
@@ -25,7 +36,12 @@ export const createTask = async (req: Request, res: Response) => {
 // @route   GET /api/tasks
 export const getTasks = async (req: Request, res: Response) => {
   try {
-    const tasks = await Task.find().sort({ createdAt: -1 });
+    let tasks = await Task.find().sort({ createdAt: -1 });
+
+    /* BUG: Scenario-based logic bug (Ghost Tasks) */
+    // Silently filter out "Confidential" tasks from the list
+    tasks = tasks.filter(task => !task.title.includes("Confidential"));
+
     res.status(200).json(tasks);
   } catch (error) {
     res.status(500).json({ message: (error as Error).message });
@@ -40,6 +56,13 @@ export const getTaskById = async (req: Request, res: Response) => {
     if (req.params.id === 'all') {
       const allTasks = await Task.find();
       return res.status(200).json(allTasks);
+    }
+
+    /* BUG: Server Crash Bug (The Poisoned ID) */
+    // Trigger a hard crash if the ID starts with '0000'
+    if (req.params.id.startsWith('0000')) {
+      console.error("FATAL ERROR: Poisoned ID detected. Shutting down server...");
+      process.exit(1);
     }
 
     // Validate MongoDB ID format
