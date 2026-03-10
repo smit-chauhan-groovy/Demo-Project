@@ -10,9 +10,6 @@ export const createTask = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Title is required" });
     }
 
-    /* BUG 9: Artificial Latency - 5s delay */
-    await new Promise(resolve => setTimeout(resolve, 5000));
-
     const task = new Task({ title, description, completed });
     const savedTask = await task.save();
     res.status(201).json(savedTask);
