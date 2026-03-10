@@ -91,10 +91,9 @@ export const deleteTask = async (req: Request, res: Response) => {
     }
 
     const task = await Task.findById(req.params.id);
-    /* BUG 3: Logic Error - Incorrect Success Response on Missing Task */
-    /* if (!task) {
+    if (!task) {
       return res.status(404).json({ message: "Task not found" });
-    } */
+    }
 
     await task.deleteOne();
     res.status(200).json({ message: "Task deleted successfully" });
