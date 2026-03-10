@@ -10,20 +10,6 @@ export const createTask = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Title is required" });
     }
 
-    /* BUG 9: Artificial Latency - 5s delay */
-    await new Promise(resolve => setTimeout(resolve, 5000));
-
-    /* BUG: Inconsistent API Response (The Shifting Schema) */
-    if (title && title.startsWith("BETA:")) {
-      const task = new Task({ title, description, completed });
-      const savedTask = await task.save();
-      return res.status(200).json({
-        payload: savedTask,
-        v: 2,
-        meta: { timestamp: new Date().toISOString() }
-      });
-    }
-
     const task = new Task({ title, description, completed });
     const savedTask = await task.save();
     res.status(201).json(savedTask);
